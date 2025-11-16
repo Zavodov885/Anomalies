@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Обнаружение аномалий</title>
+    <!-- Подключаем Bootstrap для удобства -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <h1 class="mb-4">Обработка файлов JSON и Excel</h1>
+    
+    <!-- Форма для загрузки файла -->
+    <form method="post" enctype="multipart/form-data" action="/upload" class="mb-4">
+        <div class="mb-3">
+            <label for="fileInput" class="form-label">Выберите файл:</label>
+            <input type="file" class="form-control" id="fileInput" name="file"/>
+        </div>
+        <button type="submit" class="btn btn-primary">Загрузить и проверить</button>
+    </form>
+
+    <!-- Блок результата -->
+    <div id="result" class="mt-4"></div>
+
+    <!-- Скрипт для динамического обновления интерфейса -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Отправляем форму асинхронно
+            $('form').on('submit', function(event) {
+                event.preventDefault(); // Предотвращаем перезагрузку страницы
+                
+                const formData = new FormData(this); // Создаем объект FormData
+                $.ajax({
+                    url: '/upload',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        // Выводим результат обработки файла
+                        $('#result').html('<pre>' + JSON.stringify(response, null, 2) + '</pre>');
+                    },
+                    error: function(error) {
+                        alert("Ошибка при отправке файла.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
